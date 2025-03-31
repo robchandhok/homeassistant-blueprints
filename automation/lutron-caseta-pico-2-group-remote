@@ -1,0 +1,160 @@
+blueprint:
+  name: Lutron Four-Button Scene Pico Actions
+  author: robchandhok
+  homeassistant:
+    min_version: 2025.1.0
+  description: |
+    ## Pico 2 Group remote (4 button) Blueprint
+
+    A blueprint to make it easy to map button presses from the Lutron Caseta integraation for a PJ2-4B-XXX-L21, which is on/off for 2 devices.
+
+    ### Software Version Requirements
+
+    Not tested on versions of Home Assistant before March 2025
+
+    ## Thanks to mattsheffiel and stephack for their previous variants that this is based on.
+
+  domain: automation
+  input:
+    pico:
+      name: Pico Two-Group Four-Button Remote
+      description: Select the pico four-button scene remote to configure.
+      selector:
+        device:
+          integration: lutron_caseta
+          model: PJ2-4B-XXX-L21 (Pico4Button)
+          multiple: false
+    button_1_press:
+      name: Group 1 On Pressed
+      default: []
+      selector:
+        action: {}
+    button_1_released:
+      name: Group 1 On Released
+      default: []
+      selector:
+        action: {}
+    button_2_press:
+      name: Group 1 Off Pressed
+      default: []
+      selector:
+        action: {}
+    button_2_released:
+      name: Group 1 Off Released
+      default: []
+      selector:
+        action: {}
+    button_3_press:
+      name: Group 2 On Pressed
+      default: []
+      selector:
+        action: {}
+    button_3_released:
+      name: Group 2 On Released
+      default: []
+      selector:
+        action: {}
+    button_3_press:
+      name: Group 2 Off Pressed
+      default: []
+      selector:
+        action: {}
+    button_3_released:
+      name: Group 2 Off Released
+      default: []
+      selector:
+        action: {}
+  source_url: https://github.com/robchandhok/homeassistant-blueprints/new/main
+trigger:
+- platform: device
+  device_id: !input pico
+  domain: lutron_caseta
+  type: press
+  subtype: button_1
+- platform: device
+  device_id: !input pico
+  domain: lutron_caseta
+  type: release
+  subtype: button_1
+- platform: device
+  device_id: !input pico
+  domain: lutron_caseta
+  type: press
+  subtype: button_2
+- platform: device
+  device_id: !input pico
+  domain: lutron_caseta
+  type: release
+  subtype: button_2
+- platform: device
+  device_id: !input pico
+  domain: lutron_caseta
+  type: press
+  subtype: button_3
+- platform: device
+  device_id: !input pico
+  domain: lutron_caseta
+  type: release
+  subtype: button_3
+- platform: device
+  device_id: !input pico
+  domain: lutron_caseta
+  type: press
+  subtype: 'off'
+- platform: device
+  device_id: !input pico
+  domain: lutron_caseta
+  type: release
+  subtype: 'off'
+action:
+- choose:
+  - conditions:
+    - condition: template
+      value_template: '{{ trigger.event.data.button_number == 8 }}'
+    - condition: template
+      value_template: '{{ trigger.event.data.action == "press" }}'
+    sequence: !input button_1_press
+  - conditions:
+    - condition: template
+      value_template: '{{ trigger.event.data.button_number == 8 }}'
+    - condition: template
+      value_template: '{{ trigger.event.data.action == "release" }}'
+    sequence: !input button_1_released
+  - conditions:
+    - condition: template
+      value_template: '{{ trigger.event.data.button_number == 9 }}'
+    - condition: template
+      value_template: '{{ trigger.event.data.action == "press" }}'
+    sequence: !input button_2_press
+  - conditions:
+    - condition: template
+      value_template: '{{ trigger.event.data.button_number == 9 }}'
+    - condition: template
+      value_template: '{{ trigger.event.data.action == "release" }}'
+    sequence: !input button_2_released
+  - conditions:
+    - condition: template
+      value_template: '{{ trigger.event.data.button_number == 10 }}'
+    - condition: template
+      value_template: '{{ trigger.event.data.action == "press" }}'
+    sequence: !input button_3_press
+  - conditions:
+    - condition: template
+      value_template: '{{ trigger.event.data.button_number == 10 }}'
+    - condition: template
+      value_template: '{{ trigger.event.data.action == "release" }}'
+    sequence: !input button_3_released
+  - conditions:
+    - condition: template
+      value_template: '{{ trigger.event.data.button_number == 11 }}'
+    - condition: template
+      value_template: '{{ trigger.event.data.action == "press" }}'
+    sequence: !input off_button_press
+  - conditions:
+    - condition: template
+      value_template: '{{ trigger.event.data.button_number == 11 }}'
+    - condition: template
+      value_template: '{{ trigger.event.data.action == "release" }}'
+    sequence: !input off_button_released
+  default: []
+mode: restart
