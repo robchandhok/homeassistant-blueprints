@@ -1,0 +1,152 @@
+blueprint:
+  name: Lutron Two Group Four-Button Pico Actions
+  author: robchandhok
+  homeassistant:
+    min_version: 2025.1.0
+  description: |
+    ## Pico 2 Group remote (4 button) Blueprint (v0.2)
+
+    A blueprint to make it easy to map button presses from the Lutron Caseta integration for a PJ2-4B-XXX-L21, which is on/off for 2 devices.
+
+    ### Software Version Requirements
+
+    Not tested on versions of Home Assistant before March 2025
+
+    ## Thanks
+    Shout out to mattsheffiel and stephack for their previous variants that this is based on.
+
+  domain: automation
+  source_url: https://raw.githubusercontent.com/robchandhok/homeassistant-blueprints/refs/heads/main/automation/lutron-caseta-pico-2-group-remote.yaml
+  input:
+    pico:
+      name: Pico Two-Group Four-Button Remote
+      description: Select the pico four-button scene remote to configure.
+      selector:
+        device:
+          integration: lutron_caseta
+          model: PJ2-4B-XXX-L21 (Pico4Button)
+          multiple: false
+    button_1_press:
+      name: Group 1 On Pressed
+      default: []
+      selector:
+        action: {}
+    button_1_released:
+      name: Group 1 On Released
+      default: []
+      selector:
+        action: {}
+    button_2_press:
+      name: Group 1 Off Pressed
+      default: []
+      selector:
+        action: {}
+    button_2_released:
+      name: Group 1 Off Released
+      default: []
+      selector:
+        action: {}
+    button_3_press:
+      name: Group 2 On Pressed
+      default: []
+      selector:
+        action: {}
+    button_3_released:
+      name: Group 2 On Released
+      default: []
+      selector:
+        action: {}
+    button_4_press:
+      name: Group 2 Off Pressed
+      default: []
+      selector:
+        action: {}
+    button_4_released:
+      name: Group 2 Off Released
+      default: []
+      selector:
+        action: {}
+trigger:
+- platform: device
+  device_id: !input pico
+  domain: lutron_caseta
+  type: press
+  subtype: button_1
+  id: 'BUTTON_1_PRESS'
+- platform: device
+  device_id: !input pico
+  domain: lutron_caseta
+  type: release
+  subtype: button_1
+  id: 'BUTTON_1_RELEASE'
+- platform: device
+  device_id: !input pico
+  domain: lutron_caseta
+  type: press
+  subtype: button_2
+  id: 'BUTTON_2_PRESS'
+- platform: device
+  device_id: !input pico
+  domain: lutron_caseta
+  type: release
+  subtype: button_2
+  id: 'BUTTON_2_RELEASE'
+- platform: device
+  device_id: !input pico
+  domain: lutron_caseta
+  type: press
+  subtype: button_3
+  id: 'BUTTON_3_PRESS'
+- platform: device
+  device_id: !input pico
+  domain: lutron_caseta
+  type: release
+  subtype: button_3
+  id: 'BUTTON_3_RELEASE'
+- platform: device
+  device_id: !input pico
+  domain: lutron_caseta
+  type: press
+  subtype: button_4
+  id: 'BUTTON_3_RELEASE'
+- platform: device
+  device_id: !input pico
+  domain: lutron_caseta
+  type: release
+  subtype: button_4
+  id: 'BUTTON_4_RELEASE'
+actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: 'BUTTON_1_PRESS'
+      sequence: !input button_1_press
+    - conditions:
+      - condition: trigger
+        id: 'BUTTON_1_RELEASE'
+      sequence: !input button_1_released
+    - conditions:
+      - condition: trigger
+        id: 'BUTTON_2_PRESS'
+      sequence: !input button_2_press
+    - conditions:
+      - condition: trigger
+        id: 'BUTTON_2_RELEASE'
+      sequence: !input button_2_released
+    - conditions:
+      - condition: trigger
+        id: 'BUTTON_3_PRESS'
+      sequence: !input button_3_press
+    - conditions:
+      - condition: trigger
+        id: 'BUTTON_3_RELEASE'
+      sequence: !input button_3_released
+    - conditions:
+      - condition: trigger
+        id: 'BUTTON_4_PRESS'
+      sequence: !input button_3_press
+    - conditions:
+      - condition: trigger
+        id: 'BUTTON_4_RELEASE'
+      sequence: !input button_3_released
+mode: restart
