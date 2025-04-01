@@ -108,7 +108,7 @@ trigger:
   domain: lutron_caseta
   type: press
   subtype: button_4
-  id: 'BUTTON_3_RELEASE'
+  id: 'BUTTON_4_PRESS'
 - platform: device
   device_id: !input pico
   domain: lutron_caseta
@@ -144,9 +144,9 @@ actions:
     - conditions:
       - condition: trigger
         id: 'BUTTON_4_PRESS'
-      sequence: !input button_3_press
+      sequence: !input button_4_press
     - conditions:
       - condition: trigger
         id: 'BUTTON_4_RELEASE'
-      sequence: !input button_3_released
+      sequence: !input button_4_released
 mode: restart
