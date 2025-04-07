@@ -4,7 +4,7 @@ blueprint:
   homeassistant:
     min_version: 2025.1.0
   description: |
-    ## Pico 2 Group remote (4 button) Blueprint (v0.2)
+    ## Pico 2 Group remote (4 button) Blueprint (v0.3)
 
     A blueprint to make it easy to map button presses from the Lutron Caseta integration for a PJ2-4B-XXX-L21, which is on/off for 2 devices.
 
@@ -16,7 +16,7 @@ blueprint:
     Shout out to mattsheffiel and stephack for their previous variants that this is based on.
 
   domain: automation
-  source_url: https://raw.githubusercontent.com/robchandhok/homeassistant-blueprints/refs/heads/main/automation/lutron-caseta-pico-2-group-remote.yaml
+  source_url: https://github.com/robchandhok/homeassistant-blueprints/blob/main/automation/lutron-caseta-pico-2-group-remote.yaml
   input:
     pico:
       name: Pico Two-Group Four-Button Remote
