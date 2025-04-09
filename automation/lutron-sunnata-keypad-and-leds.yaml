@@ -1,0 +1,148 @@
+blueprint:
+  name: Lutron Sunnata Keypad - Two or Four Button
+  author: robchandhok
+  homeassistant:
+    min_version: 2025.1.0
+  description: |
+    ## Sunnata Keypad - Two or Four Button Blueprint WITH LED Control (v0.11)
+
+    A blueprint to make it easy to map button presses from the Lutron Caseta integration for a Sunnata Keypads such as:
+    - RRST-W4B-XX (SunnataKeypad)
+    - RRST-HN4B-XX (SunnataHybridKeypad)
+
+    Sunnata keypads send customized event subtypes depending on their label in the Lutron Designer, so this blueprint works off of the raw leap_button_id.  
+    
+    Button "1" is the top button.
+    
+    In addition to handling the button presses in Home Assistant, this blueprint also tries to sync the LEDS to button presses.  
+    With Sunnata keypads, the button LED names are custom strings, so you have to specify which LED is which.
+    
+    In order to keep the LEDs in sync, other scripts or actions in Home Assistant should call button.press on the button, rather than doing the scene directly.
+    
+    TBD: some kind of dummy load to make the LEDs sync via the Lutron controller, but that requires you tolerate an error on every transfer in Lutron Designer.
+    
+    ### Software Version Requirements
+
+    Not tested on versions of Home Assistant before March 2025
+
+    ### Thanks
+    Shout out to wtadler, mattsheffiel, stephack and others for their previous variants that this is based on.
+
+  domain: automation
+  source_url: https://github.com/robchandhok/homeassistant-blueprints/blob/main/automation/lutron-sunnata-keypad-and-leds.yaml
+  input:
+    keypad:
+      name: Sunnata Keypad - Two or Four Button
+      description: Select the Sunnata Keypad to program
+      selector:
+        device:
+          filter:
+            - integration: lutron_caseta
+              model: RRST-W4B-XX (SunnataKeypad)
+            - integration: lutron_caseta
+              model: RRST-HN4B-XX (SunnataHybridKeypad)
+          multiple: false
+    button_1_press:
+      name: Button 1 Pressed
+      default: []
+      selector:
+        action: {}
+    button_2_press:
+      name: Button 2 Pressed
+      default: []
+      selector:
+        action: {}
+    button_3_press:
+      name: Button 3 Pressed
+      default: []
+      selector:
+        action: {}
+    button_4_press:
+      name: Button 4 Pressed
+      default: []
+      selector:
+        action: {}
+    button_1_led:
+      name: Button 1 LED
+      default: []
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - integration: lutron_caseta
+              domain: switch
+    button_2_led:
+      name: Button 2 LED
+      default: []
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - integration: lutron_caseta
+              domain: switch
+    button_3_led:
+      name: Button 3 LED
+      default: []
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - integration: lutron_caseta
+              domain: switch
+    button_4_led:
+      name: Button 4 LED
+      default: []
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - integration: lutron_caseta
+              domain: switch
+trigger:
+- platform: event
+  event_type: lutron_caseta_button_event
+  event_data:
+    device_id: !input keypad
+    leap_button_number: 1
+    action: press
+  id: 'BUTTON_1_PRESS'
+- platform: event
+  event_type: lutron_caseta_button_event
+  event_data:
+    device_id: !input keypad
+    leap_button_number: 2
+    action: press
+  id: 'BUTTON_2_PRESS'
+- platform: event
+  event_type: lutron_caseta_button_event
+  event_data:
+    device_id: !input keypad
+    leap_button_number: 3
+    action: press
+  id: 'BUTTON_3_PRESS'
+- platform: event
+  event_type: lutron_caseta_button_event
+  event_data:
+    device_id: !input keypad
+    leap_button_number: 4
+    action: press
+  id: 'BUTTON_4_PRESS'
+actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: 'BUTTON_1_PRESS'
+      sequence: !input button_1_press
+    - conditions:
+      - condition: trigger
+        id: 'BUTTON_2_PRESS'
+      sequence: !input button_2_press
+    - conditions:
+      - condition: trigger
+        id: 'BUTTON_3_PRESS'
+      sequence: !input button_3_press
+    - conditions:
+      - condition: trigger
+        id: 'BUTTON_4_PRESS'
+      sequence: !input button_4_press
+mode: restart
