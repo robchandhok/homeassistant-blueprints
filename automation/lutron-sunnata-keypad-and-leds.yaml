@@ -1,10 +1,10 @@
 blueprint:
-  name: Lutron Sunnata Keypad - Two or Four Button
+  name: Lutron Sunnata Keypad - With LED
   author: robchandhok
   homeassistant:
     min_version: 2025.1.0
   description: |
-    ## Sunnata Keypad - Two or Four Button Blueprint WITH LED Control (v0.11)
+    ## Sunnata Keypad - Two or Four Button Blueprint WITH LED Control (v0.15)
 
     A blueprint to make it easy to map button presses from the Lutron Caseta integration for a Sunnata Keypads such as:
     - RRST-W4B-XX (SunnataKeypad)
@@ -15,11 +15,11 @@ blueprint:
     Button "1" is the top button.
     
     In addition to handling the button presses in Home Assistant, this blueprint also tries to sync the LEDS to button presses.  
-    With Sunnata keypads, the button LED names are custom strings, so you have to specify which LED is which.
+    With Sunnata keypads, the button LED names are custom strings (and get custome names in Home Assistant), so you have to specify which LED is which.
     
     In order to keep the LEDs in sync, other scripts or actions in Home Assistant should call button.press on the button, rather than doing the scene directly.
     
-    TBD: some kind of dummy load to make the LEDs sync via the Lutron controller, but that requires you tolerate an error on every transfer in Lutron Designer.
+    TBD: some kind of dummy load to make the LEDs sync via the Lutron controller.  That's probably hard to do with a helper, but maybe...
     
     ### Software Version Requirements
 
@@ -44,57 +44,65 @@ blueprint:
           multiple: false
     button_1_press:
       name: Button 1 Pressed
+      description: Actions to take when button 1 is pressed
       default: []
       selector:
         action: {}
     button_2_press:
       name: Button 2 Pressed
+      description: Actions to take when button 2 is pressed
       default: []
       selector:
         action: {}
     button_3_press:
       name: Button 3 Pressed
+      description: Actions to take when button 3 is pressed
       default: []
       selector:
         action: {}
     button_4_press:
+      description: Actions to take when button 4 is pressed
       name: Button 4 Pressed
       default: []
       selector:
         action: {}
     button_1_led:
       name: Button 1 LED
+      description: The switch entity for button 1 LED of this keypad
       default: []
       selector:
         entity:
-          multiple: true
+          multiple: false
           filter:
             - integration: lutron_caseta
               domain: switch
     button_2_led:
       name: Button 2 LED
+      description: The switch entity for button 2 LED of this keypad
       default: []
       selector:
         entity:
-          multiple: true
+          multiple: false
           filter:
             - integration: lutron_caseta
               domain: switch
     button_3_led:
       name: Button 3 LED
+      description: The switch entity for button 3 LED of this keypad
       default: []
       selector:
         entity:
-          multiple: true
+          multiple: false
           filter:
             - integration: lutron_caseta
               domain: switch
     button_4_led:
       name: Button 4 LED
+      description: The switch entity for button 4 LED of this keypad
       default: []
       selector:
         entity:
-          multiple: true
+          multiple: false
           filter:
             - integration: lutron_caseta
               domain: switch
@@ -132,17 +140,105 @@ actions:
     - conditions:
       - condition: trigger
         id: 'BUTTON_1_PRESS'
-      sequence: !input button_1_press
+      sequence:
+        - sequence: !input button_1_press
+        - sequence:
+            - action: switch.turn_on
+              metadata: {}
+              data: {}
+              target:
+                entity_id: !input button_1_led
+            - action: switch.turn_off
+              metadata: {}
+              data: {}
+              target:
+                entity_id: !input button_2_led
+            - action: switch.turn_off
+              metadata: {}
+              data: {}
+              target:
+                entity_id: !input button_3_led
+            - action: switch.turn_off
+              metadata: {}
+              data: {}
+              target:
+                entity_id: !input button_4_led
     - conditions:
       - condition: trigger
         id: 'BUTTON_2_PRESS'
-      sequence: !input button_2_press
+      sequence:
+        - sequence: !input button_2_press
+        - sequence:
+            - action: switch.turn_on
+              metadata: {}
+              data: {}
+              target:
+                entity_id: !input button_2_led
+            - action: switch.turn_off
+              metadata: {}
+              data: {}
+              target:
+                entity_id: !input button_1_led
+            - action: switch.turn_off
+              metadata: {}
+              data: {}
+              target:
+                entity_id: !input button_3_led
+            - action: switch.turn_off
+              metadata: {}
+              data: {}
+              target:
+                entity_id: !input button_4_led
     - conditions:
       - condition: trigger
         id: 'BUTTON_3_PRESS'
-      sequence: !input button_3_press
+      sequence:
+        - sequence: !input button_3_press
+        - sequence:
+            - action: switch.turn_on
+              metadata: {}
+              data: {}
+              target:
+                entity_id: !input button_3_led
+            - action: switch.turn_off
+              metadata: {}
+              data: {}
+              target:
+                entity_id: !input button_1_led
+            - action: switch.turn_off
+              metadata: {}
+              data: {}
+              target:
+                entity_id: !input button_2_led
+            - action: switch.turn_off
+              metadata: {}
+              data: {}
+              target:
+                entity_id: !input button_4_led
     - conditions:
       - condition: trigger
         id: 'BUTTON_4_PRESS'
-      sequence: !input button_4_press
+      sequence:
+        - sequence: !input button_4_press
+        - sequence:
+            - action: switch.turn_on
+              metadata: {}
+              data: {}
+              target:
+                entity_id: !input button_4_led
+            - action: switch.turn_off
+              metadata: {}
+              data: {}
+              target:
+                entity_id: !input button_1_led
+            - action: switch.turn_off
+              metadata: {}
+              data: {}
+              target:
+                entity_id: !input button_2_led
+            - action: switch.turn_off
+              metadata: {}
+              data: {}
+              target:
+                entity_id: !input button_3_led
 mode: restart
